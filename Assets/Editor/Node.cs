@@ -6,13 +6,30 @@ public class Node
 {
     public Rect rect;
     public string title;
-    public GUIStyle style;
-    public bool isDragged;
 
-    public Node(Vector2 position, float width, float height, GUIStyle nodeStyle)
+    public GUIStyle style;
+    public GUIStyle defaultNodeStyle;
+    public GUIStyle selectedNodeStyle;
+
+    public bool isDragged;
+    public ConnectionPoint inPoint;
+    public ConnectionPoint outPoint;
+    public bool isSelected;
+
+    public Action<Node> OnRemoveNode;
+
+    public Node(Vector2 position, float width, float height, GUIStyle nodeStyle,
+        GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle,
+        Action<ConnectionPoint> OnClickPoint, Action<ConnectionPoint> OnClickOutPoint,
+        Action<Node> OnClickRemoveNode)
     {
         rect = new Rect(position.x, position.y, width, height);
         style = nodeStyle;
+        inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
+        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickoutPoint);
+        defaultNodeStyle = nodeStyle;
+        selectedNodeStyle = selectedStyle;
+        OnRemoveNode = OnClickRemoveNode;
     }
 
     public void Drag(Vector2 delta)
@@ -23,6 +40,8 @@ public class Node
     public void Draw()
     {
         GUI.Box(rect, title, style);
+        inPoint.Draw();
+        outPoint.Draw();
     }
 
     public bool ProcessEvents(Event e)
@@ -36,11 +55,20 @@ public class Node
                     {
                         isDragged = true;
                         GUI.changed = true;
+                        isSelected = true;
+                        style = selectedNodeStyle;
                     }
                     else
                     {
                         GUI.changed = true;
+                        isSelected = false;
+                        style = defaultNodeStyle;
                     }
+                }
+                if (e.button == 1 && isSelected && rect.Contains(e.mousePosition))
+                {
+                    ProcessConextMenu();
+                    e.Use();
                 }
                 break;
             case EventType.MouseUp:
@@ -56,5 +84,20 @@ public class Node
                 break;
         }
         return false;
+    }
+
+    private void ProcessContextMenu()
+    {
+        GenericMenu genericMenu = new GenericMenu();
+        genericMenu.AddItem(new GUIContent("Remove Node"), false, OnClickRemoveNode);
+        genericMenu.ShowAsContext();
+    }
+
+    private void OnClickRemoveNode()
+    {
+        if (OnRemoveNode != null)
+        {
+            OnRemoveNode(this);
+        }
     }
 }
