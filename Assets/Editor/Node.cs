@@ -20,13 +20,13 @@ public class Node
 
     public Node(Vector2 position, float width, float height, GUIStyle nodeStyle,
         GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle,
-        Action<ConnectionPoint> OnClickPoint, Action<ConnectionPoint> OnClickOutPoint,
+        Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint,
         Action<Node> OnClickRemoveNode)
     {
         rect = new Rect(position.x, position.y, width, height);
         style = nodeStyle;
         inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
-        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickoutPoint);
+        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickOutPoint);
         defaultNodeStyle = nodeStyle;
         selectedNodeStyle = selectedStyle;
         OnRemoveNode = OnClickRemoveNode;
@@ -67,7 +67,7 @@ public class Node
                 }
                 if (e.button == 1 && isSelected && rect.Contains(e.mousePosition))
                 {
-                    ProcessConextMenu();
+                    ProcessContextMenu();
                     e.Use();
                 }
                 break;

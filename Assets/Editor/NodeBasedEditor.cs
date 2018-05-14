@@ -12,6 +12,7 @@ public class NodeBasedEditor : EditorWindow {
     private GUIStyle outPointStyle;
     private ConnectionPoint selectedInPoint;
     private ConnectionPoint selectedOutPoint;
+    private Vector2 offset;
     private Vector2 drag;
 
     [MenuItem("Window/Node Based Editor")]
@@ -30,7 +31,7 @@ public class NodeBasedEditor : EditorWindow {
         ProcessNodeEvents(Event.current);
         ProcessEvents(Event.current);
         DrawConnections();
-        DrawConnectionLines();
+        DrawConnectionLine(Event.current);
         if (GUI.changed)
         {
             Repaint();
@@ -162,7 +163,7 @@ public class NodeBasedEditor : EditorWindow {
         {
             if (selectedOutPoint.node != selectedInPoint.node)
             {
-                Createconnection();
+                CreateConnection();
                 ClearConnectionSelection();
             }
             else
@@ -245,6 +246,19 @@ public class NodeBasedEditor : EditorWindow {
             );
             GUI.changed = true;
         }
+    }
+    
+    private void OnDrag(Vector2 delta)
+    {
+        drag = delta;
+        if (nodes != null)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                nodes[i].Drag(delta);
+            }
+        }
+        GUI.changed = true;
     }
 
     private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
