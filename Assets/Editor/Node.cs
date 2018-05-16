@@ -15,8 +15,9 @@ public class Node
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
     public bool isSelected;
-
+    public string text;
     public Action<Node> OnRemoveNode;
+
 
     public Node(Vector2 position, float width, float height, GUIStyle nodeStyle,
         GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle,
@@ -40,6 +41,11 @@ public class Node
     public void Draw()
     {
         GUI.Box(rect, title, style);
+        var rect2 = rect;
+        rect2.y += 5;
+        rect2.width -= 20;
+        rect2.height -= 20;
+        EditorGUI.TextField(rect2, "");
         inPoint.Draw();
         outPoint.Draw();
     }
