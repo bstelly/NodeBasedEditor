@@ -42,9 +42,10 @@ public class Node
     {
         GUI.Box(rect, title, style);
         var rect2 = rect;
-        rect2.y += 5;
+        rect2.y += 10;
+        rect2.x += 10;
         rect2.width -= 20;
-        rect2.height -= 20;
+        rect2.height -= 23;
         EditorGUI.TextField(rect2, "");
         inPoint.Draw();
         outPoint.Draw();
